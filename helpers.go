@@ -5,8 +5,10 @@ import (
 	"regexp"
 )
 
+const regex = `([\w]+=[\/\w]+)`
+
 func testEnvString(s string) bool {
-	r := regexp.MustCompile(`([\w]+=[\/\w]+)`)
+	r := regexp.MustCompile(regex)
 	return r.MatchString(s)
 }
 
@@ -16,4 +18,9 @@ func loadEnvFile(f string) (string, error) {
 		return "", err
 	}
 	return string(bs), nil
+}
+
+func getEnvLines(f string) []string {
+	r := regexp.MustCompile(regex)
+	return r.FindAllString(f, -1)
 }
