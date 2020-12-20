@@ -33,6 +33,10 @@ func TestLoadEnvFile(t *testing.T) {
 	} else {
 		t.Fatal(err)
 	}
+
+	if _, err := loadEnvFile("/bad/path"); err == nil {
+		t.Fatal("Expected error in loading \"/bad/path\" but got none")
+	}
 }
 
 func TestEnvString(t *testing.T) {
@@ -106,5 +110,26 @@ func TestGetEnvLines(t *testing.T) {
 		}
 	} else {
 		t.Fatal(err)
+	}
+}
+
+func TestGetKeyValues(t *testing.T) {
+	if key, value, err := getKeyValues("TESTKEY=TESTVALUE"); err == nil {
+		if key != "TESTKEY" {
+			t.Fatalf("Expected key to be \"TESTKEY\" but got %v", key)
+		}
+		if value != "TESTVALUE" {
+			t.Fatalf("Expected value to be \"TESTVALUE\" but got %v", value)
+		}
+	} else {
+		t.Fatal(err)
+	}
+	if _, _, err := getKeyValues("TESTKEY-TESTVALUE"); err != nil {
+		tErr := "\"TESTKEY-TESTVALUE\" does not match test"
+		if err.Error() != tErr {
+			t.Fatal("Unexpected error message")
+		}
+	} else {
+		t.Fatal("Expected error in parsing \"TESTKEY-TESTVALUE\" but got none")
 	}
 }
